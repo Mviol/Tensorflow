@@ -1,0 +1,64 @@
+TENSORFLOW MNIST
+
+# Criar um conjunto de dados de exemplo
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# Pré-processamento dos dados
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Criar um modelo sequencial
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=(28, 28)),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dropout(0.2),
+    keras.layers.Dense(10)
+])
+
+# Compilar o modelo
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+# Treinar o modelo
+model.fit(x_train, y_train, epochs=5)
+
+# Avaliar o modelo
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+print(f'\nA precisão do modelo é {test_acc*100:.2f}%')
+
+===============================================================================================
+
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+
+# Criar um conjunto de dados de exemplo
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# Pré-processamento dos dados
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Criar um modelo sequencial
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=(28, 28)),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dropout(0.2),
+    keras.layers.Dense(10)
+])
+
+# Compilar o modelo
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+# Configurar o TensorBoard para registrar os dados de treinamento
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=1)
+
+# Treinar o modelo e registrar os dados no TensorBoard
+model.fit(x_train, y_train, epochs=5, callbacks=[tensorboard_callback])
+
+# Avaliar o modelo
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+print(f'\nA precisão do modelo é {test_acc*100:.2f}%')
+
+tensorboard --logdir=./logs
